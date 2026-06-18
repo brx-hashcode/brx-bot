@@ -13,9 +13,9 @@ async def handle_issue_opened(payload: dict):
     repo = payload["repository"]["full_name"]
     opener = issue["user"]["login"]
 
-    # Skip if you opened it yourself
-    if opener == GITHUB_USERNAME:
-        return
+    # Skip if you opened it yourself (disabled for testing)
+    # if opener == GITHUB_USERNAME:
+    #     return
 
     context = f"""A new GitHub issue was opened in the repository `{repo}`.
 

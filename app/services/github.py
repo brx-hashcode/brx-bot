@@ -28,6 +28,15 @@ async def get_pr_diff(repo: str, pr_number: int) -> str:
     return diff[:3000] + "\n...[diff truncated]" if len(diff) > 3000 else diff
 
 
+async def post_pr_review(repo: str, pr_number: int, body: str, event: str = "COMMENT"):
+    """Submit a PR review (APPROVE, REQUEST_CHANGES, or COMMENT)."""
+    url = f"{BASE_URL}/repos/{repo}/pulls/{pr_number}/reviews"
+    async with httpx.AsyncClient() as client:
+        r = await client.post(url, headers=HEADERS, json={"body": body, "event": event})
+        r.raise_for_status()
+    return r.json()
+
+
 async def get_issue_comments(repo: str, issue_number: int, limit: int = 5) -> list[dict]:
     """Fetch last N comments on an issue for context."""
     url = f"{BASE_URL}/repos/{repo}/issues/{issue_number}/comments"

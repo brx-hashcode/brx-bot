@@ -1,17 +1,27 @@
+import asyncio
 import hmac
 import hashlib
 import json
 import logging
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Header, HTTPException
 from app.handlers.issue import handle_issue_opened, handle_issue_assigned
-from app.handlers.pr import handle_pr_assigned
+from app.handlers.pr import handle_pr_assigned, handle_pr_review_requested
 from app.handlers.comment import handle_mention
+from app.cron import keep_alive
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="GitHub Bot")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    asyncio.create_task(keep_alive())
+    yield
+
+
+app = FastAPI(title="GitHub Bot", lifespan=lifespan)
 
 
 def verify_signature(payload: bytes, signature: str, secret: str) -> bool:
@@ -53,6 +63,10 @@ async def webhook(
     # PR assigned to you
     elif x_github_event == "pull_request" and action == "assigned":
         await handle_pr_assigned(payload)
+
+    # Review requested from you on a PR
+    elif x_github_event == "pull_request" and action == "review_requested":
+        await handle_pr_review_requested(payload)
 
     # @mention in any comment (issue or PR)
     elif x_github_event == "issue_comment" and action == "created":
