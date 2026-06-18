@@ -4,12 +4,14 @@ Automatically responds to GitHub events on your behalf using Claude, and notifie
 
 ## Events handled
 
-| Event | Trigger | Claude action |
-|---|---|---|
-| Issue opened | New issue in your repos | Acknowledges + asks clarifying questions |
-| Issue assigned | Issue assigned to you | Confirms assignment + next steps |
-| PR assigned | PR assigned to you | Reviews diff + acknowledges |
-| @mention | Anyone mentions you in a comment | Replies directly to the question |
+
+| Event          | Trigger                          | Claude action                            |
+| -------------- | -------------------------------- | ---------------------------------------- |
+| Issue opened   | New issue in your repos          | Acknowledges + asks clarifying questions |
+| Issue assigned | Issue assigned to you            | Confirms assignment + next steps         |
+| PR assigned    | PR assigned to you               | Reviews diff + acknowledges              |
+| @mention       | Anyone mentions you in a comment | Replies directly to the question         |
+
 
 ---
 
@@ -18,12 +20,14 @@ Automatically responds to GitHub events on your behalf using Claude, and notifie
 ### 1. Create a GitHub App (or use a Personal Access Token)
 
 **Option A — Personal Access Token (easiest for local)**
-1. Go to https://github.com/settings/tokens → Generate new token (classic)
+
+1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens) → Generate new token (classic)
 2. Scopes: `repo`, `write:discussion`
 3. Copy the token → `GITHUB_TOKEN` in `.env`
 
 **Option B — GitHub App (more secure)**
-1. Go to https://github.com/settings/apps → New GitHub App
+
+1. Go to [https://github.com/settings/apps](https://github.com/settings/apps) → New GitHub App
 2. Webhook URL: `https://<your-tunnel>/github/webhook`
 3. Webhook secret: any random string → `WEBHOOK_SECRET` in `.env`
 4. Subscribe to: Issues, Pull requests, Issue comments
@@ -31,7 +35,8 @@ Automatically responds to GitHub events on your behalf using Claude, and notifie
 6. Install the app on your repos
 
 ### 2. Create a Slack Incoming Webhook
-1. Go to https://api.slack.com/apps → Create New App → From scratch
+
+1. Go to [https://api.slack.com/apps](https://api.slack.com/apps) → Create New App → From scratch
 2. Features → Incoming Webhooks → Activate
 3. Add New Webhook to Workspace → pick your channel
 4. Copy the webhook URL → `SLACK_WEBHOOK_URL` in `.env`
@@ -99,7 +104,8 @@ The bot skips comments made by your own username or the bot name to avoid infini
 ## Deploying to VPS later
 
 When you're ready to move from local to your Contabo VPS:
+
 1. Add a `Dockerfile` + `docker-compose.yml`
 2. Add a Traefik label for routing
 3. Point your GitHub App webhook URL to `https://github-bot.yourdomain.com/github/webhook`
-# brx-bot
+
